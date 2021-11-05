@@ -69,7 +69,7 @@ def main(argv):
 
     # Read configuration of MX L3 firewall rules
     fw_rules = m.appliance.getNetworkApplianceFirewallL3FirewallRules(net_id)
-    print(fw_rules)
+    #print(fw_rules)
     # Loop through each firewall rule and write to CSV
     for i in range(len(fw_rules)):
         csv_row = fw_rules['rules'][i]['policy'], fw_rules['rules'][i]['protocol'], fw_rules['rules'][i]['srcCidr'], fw_rules['rules'][i]['srcPort'], fw_rules['rules'][i]['destCidr'], fw_rules['rules'][i]['destPort'], fw_rules['rules'][i]['comment'], fw_rules['rules'][i]['syslogEnabled']
