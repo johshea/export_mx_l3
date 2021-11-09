@@ -61,7 +61,6 @@ def main(argv):
 
     # Set the CSV output file and write the header rowappliance.getNetworkApplianceFirewallL3FirewallRules
     time_now = f'{datetime.now():%Y-%m-%d_%H-%M-%S}'
-    file_name = f'mx_l3fw_rules__{time_now}.csv'
 
 
     # Dashboard API library class
@@ -80,7 +79,7 @@ def main(argv):
     # Create and write the CSV file (Windows, linux, macos)
     if len(fw_rule_df) > 0:
         keys = fw_rule_df[0].keys()
-        file_name = f'mx_l3fw_rules__{time_now}.csv'
+        file_name = f'mx_l3fw_rules_{net_id}-{time_now}.csv'
         inpath = Path.cwd() / file_name
         with inpath.open(mode='w+', newline='') as output_file:
             dict_writer = csv.DictWriter(output_file, keys)
