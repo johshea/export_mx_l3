@@ -64,7 +64,7 @@ def main(argv):
 
 
     # Dashboard API library class
-    m = meraki.DashboardAPI(api_key=api_key, log_file_prefix=__file__[:-3])
+    m = meraki.DashboardAPI(api_key=api_key, suppress_logging=True)
 
     # Read configuration of MX L3 firewall rules
     fw_rules = m.appliance.getNetworkApplianceFirewallL3FirewallRules(net_id)
@@ -87,7 +87,7 @@ def main(argv):
             dict_writer.writeheader()
             dict_writer.writerows(fw_rule_df)
 
-    print("Firewall rules for NetworkId: " + net_id + " downloaded.")
+    print(f"Firewall rules for NetworkId: {net_id} downloaded.")
 
 
 
