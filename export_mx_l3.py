@@ -69,6 +69,7 @@ def main(argv):
     # Read configuration of MX L3 firewall rules
     fw_rules = m.appliance.getNetworkApplianceFirewallL3FirewallRules(net_id)
 
+    #Create an Empty list to store rows
     fw_rule_df = []
     for key, value in fw_rules.items():
         for i in range(len(value)):
