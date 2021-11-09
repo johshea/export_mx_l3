@@ -6,6 +6,7 @@ Run in Python 3 with Meraki dashboard API Python library @
 https://github.com/meraki/dashboard-api-python/
 pip[3] install --upgrade meraki
 
+
 === DESCRIPTION ===
 Exports CSV of MX L3 outbound firewall rules.
 
@@ -23,6 +24,8 @@ import getopt
 import os
 import sys
 import meraki
+from pathlib import Path
+
 
 
 # Prints READ_ME help message for user to read
@@ -59,24 +62,37 @@ def main(argv):
     # Set the CSV output file and write the header rowappliance.getNetworkApplianceFirewallL3FirewallRules
     time_now = f'{datetime.now():%Y-%m-%d_%H-%M-%S}'
     file_name = f'mx_l3fw_rules__{time_now}.csv'
-    output_file = open(file_name, mode='w', newline='\n')
-    field_names = ['policy','protocol','srcCidr','srcPort','destCidr','destPort','comment','logging']
-    csv_writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
-    csv_writer.writerow(field_names)
+
 
     # Dashboard API library class
     m = meraki.DashboardAPI(api_key=api_key, log_file_prefix=__file__[:-3])
 
     # Read configuration of MX L3 firewall rules
     fw_rules = m.appliance.getNetworkApplianceFirewallL3FirewallRules(net_id)
-    #print(fw_rules)
-    # Loop through each firewall rule and write to CSV
-    for i in range(len(fw_rules)):
-        csv_row = fw_rules['rules'][i]['policy'], fw_rules['rules'][i]['protocol'], fw_rules['rules'][i]['srcCidr'], fw_rules['rules'][i]['srcPort'], fw_rules['rules'][i]['destCidr'], fw_rules['rules'][i]['destPort'], fw_rules['rules'][i]['comment'], fw_rules['rules'][i]['syslogEnabled']
-        csv_writer.writerow(csv_row)
 
-    output_file.close()
-    print(f'Export completed to file {file_name}')
+    fw_rule_df = []
+    for key, value in fw_rules.items():
+        for i in range(len(value)):
+            fw_rule_data = {'policy': value[i]['policy'], 'protocol': value[i]['protocol'], 'srcCidr': value[i]['srcCidr'], 'srcPort': value[i]['srcPort'], 'destCidr': value[i]['destCidr'], 'destPort': value[i]['destPort'], 'comment': value[i]['comment'], 'syslogEnabled': value[i]['syslogEnabled']}
+            #print(fw_rule_data)
+            fw_rule_df.append(fw_rule_data)
+
+    # Create and write the CSV file (Windows, linux, macos)
+    if len(fw_rule_df) > 0:
+        keys = fw_rule_df[0].keys()
+        file_name = f'mx_l3fw_rules__{time_now}.csv'
+        inpath = Path.cwd() / file_name
+        with inpath.open(mode='w+', newline='') as output_file:
+            dict_writer = csv.DictWriter(output_file, keys)
+            dict_writer.writeheader()
+            dict_writer.writerows(fw_rule_df)
+
+
+
+
+
+
+
 
 
 if __name__ == '__main__':
