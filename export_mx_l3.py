@@ -87,6 +87,8 @@ def main(argv):
             dict_writer.writeheader()
             dict_writer.writerows(fw_rule_df)
 
+    print("Firewall rules for NetworkId: " + net_id + " downloaded.")
+
 
 
 
